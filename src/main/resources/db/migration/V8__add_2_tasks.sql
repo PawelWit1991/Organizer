@@ -1,0 +1,1 @@
+insert into tasks(description, DONE) values ('Testowy task' , false)
