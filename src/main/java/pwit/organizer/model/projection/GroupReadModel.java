@@ -4,7 +4,8 @@ import pwit.organizer.model.Task;
 import pwit.organizer.model.TaskGroup;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GroupReadModel {
@@ -22,19 +23,20 @@ public class GroupReadModel {
     /**
      * Deadline from the latest task in group
      */
-    private LocalDateTime deadLine;
-    private Set<TaskGroupReadModel> tasks;
+    private LocalDateTime deadline;
+    private List<TaskGroupReadModel> tasks;
 
     public GroupReadModel(TaskGroup source) {
         id = source.getId();
         description = source.getDescription();
         source.getTasks().stream()
                 .map(Task::getDeadLine)
+                .filter(Objects::nonNull)
                 .max(LocalDateTime::compareTo)
-                .ifPresent(date -> deadLine = date);
+                .ifPresent(date -> deadline = date);
         tasks = source.getTasks().stream()
                 .map(TaskGroupReadModel::new)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public String getDescription() {
@@ -45,19 +47,19 @@ public class GroupReadModel {
         this.description = description;
     }
 
-    public LocalDateTime getDeadLine() {
-        return deadLine;
+    public LocalDateTime getDeadline() {
+        return deadline;
     }
 
-    public void setDeadLine(LocalDateTime deadLine) {
-        this.deadLine = deadLine;
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
     }
 
-    public Set<TaskGroupReadModel> getTasks() {
+    public List<TaskGroupReadModel> getTasks() {
         return tasks;
     }
 
-    public void setTasks(Set<TaskGroupReadModel> tasks) {
+    public void setTasks(List<TaskGroupReadModel> tasks) {
         this.tasks = tasks;
     }
 }
