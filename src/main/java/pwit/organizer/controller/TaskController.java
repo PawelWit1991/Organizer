@@ -11,11 +11,13 @@ import pwit.organizer.adapter.SqlTaskRepository;
 import pwit.organizer.logic.TaskService;
 import pwit.organizer.model.Task;
 import pwit.organizer.model.TaskRepository;
+import pwit.organizer.model.projection.TaskGroupReadModel;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -96,5 +98,13 @@ public class TaskController {
     public ResponseEntity<?> deleteAllTasks(){
         repository.deleteAll();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/test")
+    ResponseEntity<?> test(){
+        return ResponseEntity.ok(repository.findAll().stream()
+                .sorted((a,b) -> (b.getId() - (a.getId())))
+                        .skip(2)
+                .collect(Collectors.toList()));
     }
 }

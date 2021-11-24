@@ -4,6 +4,7 @@ import pwit.organizer.TaskConfigurationProperties;
 import pwit.organizer.model.*;
 import pwit.organizer.model.projection.GroupReadModel;
 import pwit.organizer.model.projection.GroupWriteModel;
+import pwit.organizer.model.projection.ProjectWriteModel;
 import pwit.organizer.model.projection.TaskGroupWriteModel;
 
 import java.time.LocalDateTime;
@@ -29,8 +30,8 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    Project save(Project project) {
-        return projectRepository.save(project);
+    public Project save(ProjectWriteModel toSave) {
+        return projectRepository.save(toSave.toProject());
     }
 
     public GroupReadModel createGroup(int projectId, LocalDateTime deadline) {
@@ -48,9 +49,9 @@ public class ProjectService {
                                                 task.setDescription(project.getDescription());
                                                 task.setDeadLine(deadline.plusDays(projectStep.getDaysToDeadline()));
                                                 return task;
-                                    }).collect(Collectors.toSet())
+                                    }).collect(Collectors.toList())
                     );
-                    return taskGroupService.createGroup(targetGroup);
+                    return taskGroupService.createGroup(targetGroup, project);
                 }).orElseThrow(() -> new IllegalArgumentException("Project with given id not found"));
         return result;
     }

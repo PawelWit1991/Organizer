@@ -1,6 +1,7 @@
 package pwit.organizer.logic;
 
 import org.springframework.stereotype.Service;
+import pwit.organizer.model.Project;
 import pwit.organizer.model.TaskGroup;
 import pwit.organizer.model.TaskGroupRepository;
 import pwit.organizer.model.TaskRepository;
@@ -26,7 +27,11 @@ public class TaskGroupService {
     }
 
     public GroupReadModel createGroup(GroupWriteModel source){
-        TaskGroup result = taskGroupRepository.save(source.toGroup());
+       return createGroup(source, null);
+    }
+
+    public GroupReadModel createGroup(GroupWriteModel source, Project project) {
+        TaskGroup result = taskGroupRepository.save(source.toGroup(project));
         return new GroupReadModel(result);
     }
 
@@ -45,4 +50,6 @@ public class TaskGroupService {
         result.setDone(!result.isDone());
         taskGroupRepository.save(result);
     }
+
+
 }
